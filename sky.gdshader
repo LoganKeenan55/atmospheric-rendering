@@ -23,8 +23,10 @@ void sky() {
 
           float density = 0.0;
 
-          
-          density = exp(-height / scaleHeight); //atmospheric density at point
+
+          if (height >= 0.0 && height <= atmosphereHeight) {
+               density = exp(-height / scaleHeight);
+          }
 
           totalDensity += density * stepSize; //accumulate atmosphere along ray
 
