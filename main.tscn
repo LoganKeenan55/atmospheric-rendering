@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://btuj8t1j7ct8n"]
+
+[ext_resource type="Script" uid="uid://c16q04o7fr71o" path="res://Main.cs" id="1_h2yge"]
+[ext_resource type="Shader" uid="uid://bbw8j2k7tmx1a" path="res://sky.gdshader" id="1_ig7tw"]
+[ext_resource type="Script" uid="uid://d1gqf3gght5be" path="res://Camera.cs" id="2_0xm2m"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v84pk"]
+shader = ExtResource("1_ig7tw")
+shader_parameter/cameraPosition = Vector3(0, 0, 0)
+
+[sub_resource type="Sky" id="Sky_m1upx"]
+sky_material = SubResource("ShaderMaterial_v84pk")
+
+[sub_resource type="Environment" id="Environment_wfihs"]
+background_mode = 2
+sky = SubResource("Sky_m1upx")
+
+[node name="Main" type="Node3D" unique_id=241041316]
+script = ExtResource("1_h2yge")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1404006434]
+environment = SubResource("Environment_wfihs")
+
+[node name="Camera" type="Camera3D" parent="." unique_id=1302370738]
+script = ExtResource("2_0xm2m")
