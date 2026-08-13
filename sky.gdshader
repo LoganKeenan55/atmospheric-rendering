@@ -8,32 +8,40 @@ const float scaleHeight = 200.0f;      //how fast atmosphere gets thinner
 const int steps = 64; //how many points sampled per ray
 const float stepSize = 100.0f; //how spaced out the samples are
 
+const float kr = 0.0025f; //scattering constant
+
+const vec3 lamda = vec3(0.700f, 0.540f, 0.49f); //colors in micrometers
+
+const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
+
+const vec3 rayleighCoefficient = (4.0f*PI) * scatteringCoefficient;
+
+
 void sky() {
 
      vec3 rayDirection = EYEDIR;
 
      float distance = 0.0f; //distance traveled along ray
-     float totalDensity = 0.0f;
+     vec3 outScatterAcc = vec3(0.0f);
 
 
      for(int i = 0; i < steps; i++){
-          vec3 point = cameraPosition + rayDirection * distance;
+          vec3 sample = cameraPosition + rayDirection * distance;
 
-          float height = point.y;
+          float height = sample.y;
 
-          float density = 0.0;
-
+          vec3 sampleOutScatter = vec3(0.0f);
 
           if (height >= 0.0 && height <= atmosphereHeight) {
-               density = exp(-height / scaleHeight);
+               sampleOutScatter = exp(-height / scaleHeight) * rayleighCoefficient; //density at height * rayleighCoef
           }
 
-          totalDensity += density * stepSize; //accumulate atmosphere along ray
+          outScatterAcc += sampleOutScatter * stepSize; //accumulate outscatter along ray
 
           distance += stepSize;
      }
 
-     float visualization = totalDensity / (float(steps) * stepSize); //visualize atmospheric density
-
-     COLOR = vec3(visualization);
+     vec3 outScatter = outScatterAcc / (float(steps) * stepSize); //visualize atmospheric density
+     
+     COLOR = outScatter;
 }
