@@ -8,8 +8,8 @@ public partial class Camera : Camera3D
 	Vector2 lookAngles = Vector2.Zero;
 
 	[Export]
-	private float acceleration = 250.0f;
-	private float moveSpeed = 200.0f;
+	private float acceleration = 2500.0f;
+	private float moveSpeed = 2000.0f;
 	private float mouseSpeed = 300.0f;
 
 	public override void _Ready(){
