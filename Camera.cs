@@ -8,7 +8,7 @@ public partial class Camera : Camera3D
 	Vector2 lookAngles = Vector2.Zero;
 
 	[Export]
-	private float acceleration = 25.0f;
+	private float acceleration = 250.0f;
 	private float moveSpeed = 200.0f;
 	private float mouseSpeed = 300.0f;
 

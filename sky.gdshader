@@ -1,6 +1,7 @@
 shader_type sky;
 
 uniform vec3 cameraPosition;
+uniform vec3 sunDirection;
 
 const float atmosphereHeight = 1000.0f; //height of atmosphere
 const float scaleHeight = 200.0f;      //how fast atmosphere gets thinner
@@ -8,18 +9,20 @@ const float scaleHeight = 200.0f;      //how fast atmosphere gets thinner
 const int steps = 64; //how many points sampled per ray
 const float stepSize = 100.0f; //how spaced out the samples are
 
-const float kr = 0.0025f; //scattering constant
-
+//outScatter
 const vec3 lamda = vec3(0.700f, 0.540f, 0.49f); //colors in micrometers
-
+const float kr = 0.0025f; //scattering constant
 const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
-
 const vec3 rayleighCoefficient = (4.0f*PI) * scatteringCoefficient;
+
+
 
 
 void sky() {
 
      vec3 rayDirection = EYEDIR;
+     
+     float cosTheta = dot(rayDirection, sunDirection);
 
      float distance = 0.0f; //distance traveled along ray
      float outScatterAcc = 0.0f;
@@ -44,5 +47,6 @@ void sky() {
      vec3 outScatter = outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //ammount of light scattered
      vec3 transmittance = exp(-outScatter); //fraction of light that survives
      
-     COLOR = transmittance;
+     float cosThetaVisualized = cosTheta * 0.5 + 0.5;
+     COLOR = vec3(cosThetaVisualized);
 }

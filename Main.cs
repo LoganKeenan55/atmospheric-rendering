@@ -1,11 +1,12 @@
 using Godot;
 using System;
+using System.Numerics;
 
 public partial class Main : Node3D
 {
 	private Camera3D camera;
 	private WorldEnvironment worldEnvironment;
-
+	private Godot.Vector3 sunDir = new Godot.Vector3(1.0f,0.3f,0.0f); //for straight up (0.0f,1.0f,0.0f);
 	public override void _Ready(){
 		camera = GetNode<Camera3D>("Camera");
 		worldEnvironment = GetNode<WorldEnvironment>("WorldEnvironment");
@@ -23,7 +24,8 @@ public partial class Main : Node3D
 		Sky skyResource = worldEnvironment.Environment.Sky;
 
 		if(skyResource?.SkyMaterial is ShaderMaterial skyMat){
-			skyMat.SetShaderParameter("cameraPosition",camera.GlobalPosition);
+			skyMat.SetShaderParameter("cameraPosition", camera.GlobalPosition);
+			skyMat.SetShaderParameter("sunDirection", sunDir);
 		}
 	}
 }
