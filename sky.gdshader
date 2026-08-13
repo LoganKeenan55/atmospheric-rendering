@@ -44,9 +44,9 @@ vec3 getInScatter(vec3 start, vec3 direction, float phase){
      float distance = 0.0f; //distance traveled along ray
      vec3 inScatterAcc = vec3(0.0f);
 
-     float stepSize = atmosphereHeight / float(steps);
+     float stepSize = atmosphereHeight / float(inSteps);
 
-     for(int i = 0; i < steps; i++){
+     for(int i = 0; i < inSteps; i++){
           vec3 sample = start + direction * distance;
 
           float height = sample.y;
