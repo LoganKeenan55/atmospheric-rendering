@@ -14,30 +14,27 @@ const float kr = 0.0025f; //scattering constant
 const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
 const vec3 rayleighCoefficient = ((4.0f*PI) * scatteringCoefficient) / 1000.0f; //convert to km
 
-vec3 getOutScatter(vec3 start, vec3 direction){
+vec3 getOutScatter(vec3 start, vec3 direction, float maxDistance){
      
-     float distance = 0.0f; //distance traveled along ray
+     float distance = 0.0f;
      vec3 outScatterAcc = vec3(0.0f);
 
-     float stepSize = atmosphereHeight / float(steps);
+     float stepSize = maxDistance / float(steps);
 
      for(int i = 0; i < steps; i++){
-          vec3 sample = start + direction * distance;
-
-          float height = sample.y;
+          vec3 samplePos = start + direction * distance;
+          float height = samplePos.y;
 
           float sampleOutScatter = 0.0f;
-
           if (height >= 0.0 && height <= atmosphereHeight) {
-               sampleOutScatter = exp(-height / scaleHeight); //density at height
+               sampleOutScatter = exp(-height / scaleHeight);
           }
 
-          outScatterAcc += sampleOutScatter * stepSize; //accumulate outscatter along ray
-
+          outScatterAcc += sampleOutScatter * stepSize;
           distance += stepSize;
      }
 
-     return outScatterAcc* rayleighCoefficient; //ammount of light scattered
+     return outScatterAcc * rayleighCoefficient;
 }
 
 vec3 getInScatter(vec3 start, vec3 direction, float phase){
@@ -55,10 +52,12 @@ vec3 getInScatter(vec3 start, vec3 direction, float phase){
                float localDensity = exp(-height / scaleHeight); //density at height
 
                //sunlight reaching sample
-               vec3 sunOutScatter = getOutScatter(sample,sunDirection);
-               vec3 sunAttenuation = exp(-sunOutScatter);
+               vec3 sunOutScatter = getOutScatter(sample, sunDirection, atmosphereHeight); //how much sunlight makes it down to this sample point
+               vec3 viewOutScatter = getOutScatter(start, direction, distance); //how much sunlight makes it to camera
 
-               vec3 sampleInScatter = localDensity * sunAttenuation;
+               vec3 totalAttenuation = exp(-(sunOutScatter + viewOutScatter)); //combine trip sun -> sample -> camera
+
+               vec3 sampleInScatter = localDensity * totalAttenuation;
 
                inScatterAcc += sampleInScatter * stepSize;
           }
@@ -76,9 +75,6 @@ void sky() {
 
      float cosTheta = dot(rayDirection, sunDirection);
      float phase = 0.75f * (1.0f + (cosTheta * cosTheta));
-
-     vec3 outScatter = getOutScatter(cameraPosition,rayDirection);
-     vec3 transmittance = exp(-outScatter); //fraction of light that survives
 
      vec3 inScatter = getInScatter(cameraPosition,rayDirection,phase);
      COLOR = inScatter;
