@@ -41,7 +41,8 @@ void sky() {
           distance += stepSize;
      }
 
-     vec3 outScatter = outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //visualize atmospheric density
+     vec3 outScatter = outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //ammount of light scattered
+     vec3 transmittance = exp(-outScatter); //fraction of light that survives
      
-     COLOR = outScatter;
+     COLOR = transmittance;
 }
