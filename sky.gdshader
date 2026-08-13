@@ -15,18 +15,16 @@ const float kr = 0.0025f; //scattering constant
 const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
 const vec3 rayleighCoefficient = (4.0f*PI) * scatteringCoefficient;
 
-
-
-
 void sky() {
 
      vec3 rayDirection = EYEDIR;
-     
+
      float cosTheta = dot(rayDirection, sunDirection);
+
+     float phase = 0.75f * 1.0f + (cosTheta * cosTheta);
 
      float distance = 0.0f; //distance traveled along ray
      float outScatterAcc = 0.0f;
-
 
      for(int i = 0; i < steps; i++){
           vec3 sample = cameraPosition + rayDirection * distance;
@@ -47,6 +45,6 @@ void sky() {
      vec3 outScatter = outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //ammount of light scattered
      vec3 transmittance = exp(-outScatter); //fraction of light that survives
      
-     float cosThetaVisualized = cosTheta * 0.5 + 0.5;
-     COLOR = vec3(cosThetaVisualized);
+     float phaseVisualized = (phase - 0.75) / (1.5 - 0.75);
+     COLOR = vec3(phaseVisualized);
 }
