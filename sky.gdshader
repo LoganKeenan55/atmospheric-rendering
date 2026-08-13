@@ -76,8 +76,18 @@ void sky() {
      float cosTheta = dot(rayDirection, sunDirection);
      float phase = 0.75f * (1.0f + (cosTheta * cosTheta));
 
+
      vec3 inScatter = getInScatter(cameraPosition,rayDirection,phase);
-     COLOR = inScatter;
+
+
+     if(cosTheta > .999){
+          COLOR = vec3(1.0f,1.0f,1.0f);
+     }
+     else{
+        COLOR = inScatter;  
+     }
+
+    
 }
 
 
