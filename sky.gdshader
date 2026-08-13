@@ -22,7 +22,7 @@ void sky() {
      vec3 rayDirection = EYEDIR;
 
      float distance = 0.0f; //distance traveled along ray
-     vec3 outScatterAcc = vec3(0.0f);
+     float outScatterAcc = 0.0f;
 
 
      for(int i = 0; i < steps; i++){
@@ -30,10 +30,10 @@ void sky() {
 
           float height = sample.y;
 
-          vec3 sampleOutScatter = vec3(0.0f);
+          float sampleOutScatter = 0.0f;
 
           if (height >= 0.0 && height <= atmosphereHeight) {
-               sampleOutScatter = exp(-height / scaleHeight) * rayleighCoefficient; //density at height * rayleighCoef
+               sampleOutScatter = exp(-height / scaleHeight); //density at height
           }
 
           outScatterAcc += sampleOutScatter * stepSize; //accumulate outscatter along ray
@@ -41,7 +41,7 @@ void sky() {
           distance += stepSize;
      }
 
-     vec3 outScatter = outScatterAcc / (float(steps) * stepSize); //visualize atmospheric density
+     vec3 outScatter = outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //visualize atmospheric density
      
      COLOR = outScatter;
 }
