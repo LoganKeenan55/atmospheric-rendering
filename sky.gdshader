@@ -15,19 +15,12 @@ const float kr = 0.0025f; //scattering constant
 const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
 const vec3 rayleighCoefficient = (4.0f*PI) * scatteringCoefficient;
 
-void sky() {
-
-     vec3 rayDirection = EYEDIR;
-
-     float cosTheta = dot(rayDirection, sunDirection);
-
-     float phase = 0.75f * 1.0f + (cosTheta * cosTheta);
-
+vec3 getOutScatter(vec3 start, vec3 direction){
      float distance = 0.0f; //distance traveled along ray
      float outScatterAcc = 0.0f;
 
      for(int i = 0; i < steps; i++){
-          vec3 sample = cameraPosition + rayDirection * distance;
+          vec3 sample = start + direction * distance;
 
           float height = sample.y;
 
@@ -42,9 +35,23 @@ void sky() {
           distance += stepSize;
      }
 
-     vec3 outScatter = outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //ammount of light scattered
-     vec3 transmittance = exp(-outScatter); //fraction of light that survives
-     
-     float phaseVisualized = (phase - 0.75) / (1.5 - 0.75);
-     COLOR = vec3(phaseVisualized);
+     return outScatterAcc / (float(steps) * stepSize) * rayleighCoefficient; //ammount of light scattered
 }
+
+
+void sky() {
+
+     vec3 rayDirection = EYEDIR;
+
+     float cosTheta = dot(rayDirection, sunDirection);
+
+     float phase = 0.75f * 1.0f + (cosTheta * cosTheta);
+
+
+     vec3 outScatter = getOutScatter(cameraPosition,rayDirection);
+
+     vec3 transmittance = exp(-outScatter); //fraction of light that survives
+     COLOR = vec3(transmittance);
+}
+
+
