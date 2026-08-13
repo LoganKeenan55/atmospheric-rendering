@@ -25,7 +25,7 @@ public partial class Main : Node3D
 
 		if(skyResource?.SkyMaterial is ShaderMaterial skyMat){
 			skyMat.SetShaderParameter("cameraPosition", camera.GlobalPosition);
-			skyMat.SetShaderParameter("sunDirection", sunDir);
+			skyMat.SetShaderParameter("sunDirection", sunDir.Normalized());
 		}
 	}
 }

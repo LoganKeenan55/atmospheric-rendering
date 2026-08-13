@@ -8,6 +8,7 @@
 shader = ExtResource("1_ig7tw")
 shader_parameter/cameraPosition = Vector3(0, 0, 0)
 shader_parameter/sunDirection = Vector3(0, 0, 0)
+shader_parameter/scatterScale = 0.00999999977648
 
 [sub_resource type="Sky" id="Sky_m1upx"]
 sky_material = SubResource("ShaderMaterial_v84pk")
@@ -16,7 +17,11 @@ sky_material = SubResource("ShaderMaterial_v84pk")
 background_mode = 2
 sky = SubResource("Sky_m1upx")
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d0xv4"]
+albedo_color = Color(1.0829419e-06, 0.571517, 0.21236953, 1)
+
 [sub_resource type="CylinderMesh" id="CylinderMesh_m1upx"]
+material = SubResource("StandardMaterial3D_d0xv4")
 top_radius = 71.33594
 bottom_radius = 71.33594
 height = 0.43164063
