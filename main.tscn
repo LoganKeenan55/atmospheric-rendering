@@ -7,8 +7,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v84pk"]
 shader = ExtResource("1_ig7tw")
 shader_parameter/cameraPosition = Vector3(0, 0, 0)
-shader_parameter/sunDirection = Vector3(0, 0, 0)
-shader_parameter/scatterScale = 0.00999999977648
+shader_parameter/sunDirection = Vector3(0, 0.095, 0)
 
 [sub_resource type="Sky" id="Sky_m1upx"]
 sky_material = SubResource("ShaderMaterial_v84pk")
