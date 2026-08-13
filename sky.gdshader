@@ -4,9 +4,9 @@ uniform vec3 cameraPosition;
 uniform vec3 sunDirection;
 
 const float atmosphereHeight = 10000.0f; //height of atmosphere
-const float scaleHeight = 2000.0f;      //how fast atmosphere gets thinner
+const float scaleHeight = 1000.0f;      //how fast atmosphere gets thinner
 
-const int steps = 32; //how many points sampled per ray
+const int steps = 64; //how many points sampled per ray
 const int inSteps = 16;
 //outScatter
 const vec3 lamda = vec3(0.700f, 0.540f, 0.49f); //colors in micrometers
@@ -76,20 +76,17 @@ void sky() {
      float cosTheta = dot(rayDirection, sunDirection);
      float phase = 0.75f * (1.0f + (cosTheta * cosTheta));
 
+     vec3 inScatter = getInScatter(cameraPosition, rayDirection, phase);
 
-     vec3 inScatter = getInScatter(cameraPosition,rayDirection,phase);
+     float sunVisibility = smoothstep(-0.2f, 0.5f, sunDirection.y);
 
-     if(rayDirection.y < 0.0){
-          COLOR = vec3(0.0f,0.0f,0.0f);
-     }
-     else if(cosTheta > .999){
-          COLOR = vec3(1.0f,1.0f,1.0f);
-     }
-     else{
-          COLOR = inScatter;  
-     }
+     inScatter *= sunVisibility;
 
-    
+     if (rayDirection.y < 0.0) {
+          COLOR = vec3(0.0);
+     } else if (cosTheta > 0.999) {
+          COLOR = vec3(1.0) * sunVisibility;
+     } else {
+          COLOR = inScatter;
+     }
 }
-
-
