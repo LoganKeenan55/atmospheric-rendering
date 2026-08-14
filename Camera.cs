@@ -9,7 +9,7 @@ public partial class Camera : Camera3D
 
 	[Export]
 	private float acceleration = 250000.0f;
-	private float moveSpeed = 200.0f;
+	private float moveSpeed = 20.0f;
 	private float mouseSpeed = 300.0f;
 
 	public override void _Ready(){
@@ -20,10 +20,10 @@ public partial class Camera : Camera3D
 	public override void _Process(double delta){
 
 		if (Input.IsActionJustPressed("wheelUp")){
-			moveSpeed += 100;
+			moveSpeed += 50;
 		}
 		if (Input.IsActionJustPressed("wheelDown")){
-			moveSpeed -= 100;
+			moveSpeed -= 50;
 			if(moveSpeed < 20){
 				moveSpeed = 20;
 			}
