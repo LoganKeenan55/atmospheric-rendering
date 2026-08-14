@@ -16,6 +16,9 @@ sky_material = SubResource("ShaderMaterial_v84pk")
 [sub_resource type="Environment" id="Environment_wfihs"]
 background_mode = 2
 sky = SubResource("Sky_m1upx")
+ssr_enabled = true
+ssao_enabled = true
+ssil_enabled = true
 glow_bloom = 0.33
 adjustment_contrast = 1.095
 

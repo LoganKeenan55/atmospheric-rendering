@@ -10,7 +10,7 @@ public partial class Main : Node3D
 	private Godot.Vector3 sunDir = new Godot.Vector3(0.0f,0.0f,0.0f); //for straight up (0.0f,1.0f,0.0f);
 
 	private float sunSpeed = .5f;
-	private float angle = .45f;
+	private float angle = 1.4f;
 
 	public override void _Ready(){
 		camera = GetNode<Camera3D>("Camera");
@@ -33,7 +33,7 @@ public partial class Main : Node3D
 			angle -= movement;
 		}
 
-		angle = Mathf.Clamp(angle, -Mathf.Pi / 2.0f, Mathf.Pi / 2.0f );
+		//angle = Mathf.Clamp(angle, -Mathf.Pi / 2.0f, Mathf.Pi / 2.0f );
 
 
 		sunDir.X = Mathf.Sin(angle);

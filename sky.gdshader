@@ -15,6 +15,7 @@ const float kr = 0.0025f; //scattering constant
 const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
 const vec3 rayleighCoefficient = ((4.0f*PI) * scatteringCoefficient) / 1000.0f; //convert to km
 
+const float twilightDuration = 0.05f;
 
 float distanceToAtmosphere(vec3 start, vec3 direction){
      float target = direction.y >= 0.0f ? atmosphereHeight : 0.0f;
@@ -46,7 +47,7 @@ vec3 getOutScatter(vec3 start, vec3 direction, float maxDistance){
      return outScatterAcc * rayleighCoefficient;
 }
 
-vec3 getInScatter(vec3 start, vec3 direction, float phase){
+vec3 getInScatter(vec3 start, vec3 direction, vec3 sunDir, float phase){
      float distance = 0.0f; //distance traveled along ray
      vec3 inScatterAcc = vec3(0.0f);
 
@@ -61,7 +62,7 @@ vec3 getInScatter(vec3 start, vec3 direction, float phase){
                float localDensity = exp(-height / scaleHeight); //density at height
 
                //sunlight reaching sample
-               vec3 sunOutScatter = getOutScatter(sample, sunDirection, distanceToAtmosphere(sample, sunDirection)); //how much sunlight makes it down to this sample point
+               vec3 sunOutScatter = getOutScatter(sample, sunDir, distanceToAtmosphere(sample, sunDir)); //how much sunlight makes it down to this sample point
                vec3 viewOutScatter = getOutScatter(start, direction, distance); //how much sunlight makes it to camera
 
                vec3 totalAttenuation = exp(-(sunOutScatter + viewOutScatter)); //combine trip sun -> sample -> camera
@@ -91,29 +92,25 @@ void sky() {
           scatterDirection.y = -scatterDirection.y;
      }
 
+     vec3 sunDirForScatter = sunDirection;
+     sunDirForScatter.y = max(sunDirection.y, 0.001f);
+     sunDirForScatter = normalize(sunDirForScatter);
+
      float cosTheta = dot(scatterDirection, sunDirection);
-     float phase = 0.75f * (1.0f + (cosTheta * cosTheta));
+     float phase = 0.3f * (1.0f + (cosTheta * cosTheta));
 
-     vec3 inScatter = getInScatter(cameraPosition, scatterDirection, phase);
+     vec3 inScatter = getInScatter(cameraPosition,scatterDirection, sunDirForScatter, phase);
 
-     //water
+     //adds extra time to sunset before sun is completely set
+     float twilightAmount = smoothstep(-twilightDuration, 0.0f, sunDirection.y);
+     inScatter *= twilightAmount;
+
      if (rayDirection.y < 0.0f) {
-          /*if (cosTheta > 0.999f) {
-               COLOR = vec3(1.0) * 0.80f;
-          } else {
-          */
-               COLOR = inScatter * waterColor();
-         // }
+          COLOR = inScatter * waterColor();
      }
-     //sun is set
-     else if (sunDirection.y < 0.0) {
-          COLOR = vec3(0.0f);
-     }
-     //sun circle
-     else if (cosTheta > 0.999f) {
+     else if (dot(scatterDirection, sunDirection) > 0.999f) {
           COLOR = vec3(1.0);
      }
-     //sky
      else {
           COLOR = inScatter;
      }
