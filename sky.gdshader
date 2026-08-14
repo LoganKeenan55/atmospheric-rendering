@@ -14,6 +14,20 @@ const float kr = 0.0025f; //scattering constant
 const vec3 scatteringCoefficient = kr / pow(lamda, vec3(4.0f)); //K(lamda)
 const vec3 rayleighCoefficient = ((4.0f*PI) * scatteringCoefficient) / 1000.0f; //convert to km
 
+
+float distanceToAtmosphere(vec3 start, vec3 direction){
+     float target = direction.y >= 0.0f ? atmosphereHeight : 0.0f;
+     if (abs(direction.y) < 0.0005) {
+          return 200000.0f; // near-horizontal ray, just clamp to a large distance
+     }
+     if(direction.y == 0.0f){
+          return 20000.0f;
+     }
+     
+     float t = (target - start.y) / direction.y;
+     return t;
+}
+
 vec3 getOutScatter(vec3 start, vec3 direction, float maxDistance){
      
      float distance = 0.0f;
@@ -41,7 +55,7 @@ vec3 getInScatter(vec3 start, vec3 direction, float phase){
      float distance = 0.0f; //distance traveled along ray
      vec3 inScatterAcc = vec3(0.0f);
 
-     float stepSize = atmosphereHeight / float(inSteps);
+     float stepSize = distanceToAtmosphere(start, direction) / float(inSteps);
 
      for(int i = 0; i < inSteps; i++){
           vec3 sample = start + direction * distance;
@@ -52,7 +66,7 @@ vec3 getInScatter(vec3 start, vec3 direction, float phase){
                float localDensity = exp(-height / scaleHeight); //density at height
 
                //sunlight reaching sample
-               vec3 sunOutScatter = getOutScatter(sample, sunDirection, atmosphereHeight); //how much sunlight makes it down to this sample point
+               vec3 sunOutScatter = getOutScatter(sample, sunDirection, distanceToAtmosphere(sample, sunDirection)); //how much sunlight makes it down to this sample point
                vec3 viewOutScatter = getOutScatter(start, direction, distance); //how much sunlight makes it to camera
 
                vec3 totalAttenuation = exp(-(sunOutScatter + viewOutScatter)); //combine trip sun -> sample -> camera
@@ -78,14 +92,15 @@ void sky() {
 
      vec3 inScatter = getInScatter(cameraPosition, rayDirection, phase);
 
-     float sunVisibility = smoothstep(-0.2f, 0.5f, sunDirection.y);
-
-     inScatter *= sunVisibility;
-
-     if (rayDirection.y < 0.0) {
-          COLOR = vec3(0.0);
-     } else if (cosTheta > 0.999) {
-          COLOR = vec3(1.0) * sunVisibility;
+  
+     if(rayDirection.y < 0.0f){
+          COLOR = vec3(0.0f);
+     }
+     else if(sunDirection.y < 0.0){
+          COLOR = vec3(0.0f);
+     } 
+     else if (cosTheta > 0.999f) {
+          COLOR = vec3(1.0);
      } else {
           COLOR = inScatter;
      }

@@ -15,6 +15,8 @@ sky_material = SubResource("ShaderMaterial_v84pk")
 [sub_resource type="Environment" id="Environment_wfihs"]
 background_mode = 2
 sky = SubResource("Sky_m1upx")
+glow_bloom = 0.33
+adjustment_contrast = 1.095
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_d0xv4"]
 albedo_color = Color(1.0829419e-06, 0.571517, 0.21236953, 1)
