@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c16q04o7fr71o" path="res://Main.cs" id="1_h2yge"]
 [ext_resource type="Shader" uid="uid://bbw8j2k7tmx1a" path="res://sky.gdshader" id="1_ig7tw"]
 [ext_resource type="Script" uid="uid://d1gqf3gght5be" path="res://Camera.cs" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://0n17fjx4cqoi" path="res://birch_tree.tscn" id="4_1bvp3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v84pk"]
 shader = ExtResource("1_ig7tw")
@@ -23,20 +24,46 @@ albedo_color = Color(1.0829419e-06, 0.571517, 0.21236953, 1)
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_m1upx"]
 material = SubResource("StandardMaterial3D_d0xv4")
-top_radius = 730.97754
-bottom_radius = 730.97754
+top_radius = 3931.5908
+bottom_radius = 3931.5908
 height = 0.43164063
 
 [node name="Main" type="Node3D" unique_id=241041316]
 script = ExtResource("1_h2yge")
+
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=739199209]
+transform = Transform3D(1, 0, 0, 0, 0.8645867, 0.5024836, 0, -0.5024836, 0.8645867, 0, 0, 0)
+shadow_enabled = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1404006434]
 environment = SubResource("Environment_wfihs")
 
 [node name="Camera" type="Camera3D" parent="." unique_id=1302370738]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.4803724, 0)
+far = 9000.0
 script = ExtResource("2_0xm2m")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1748066674]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7841797, 0)
 mesh = SubResource("CylinderMesh_m1upx")
+
+[node name="birch_tree" parent="." unique_id=1484072918 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 0.41174817, -0.95491266, -11.886225)
+
+[node name="birch_tree2" parent="." unique_id=108629094 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, -4.7838297, -0.95491266, -3.737996)
+
+[node name="birch_tree3" parent="." unique_id=434893038 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 6.355629, -0.95491266, -6.9103656)
+
+[node name="birch_tree4" parent="." unique_id=1881838613 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 6.355629, -0.95491266, -0.72973394)
+
+[node name="birch_tree5" parent="." unique_id=1608166005 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 1.0129204, -0.95491266, -3.737996)
+
+[node name="birch_tree6" parent="." unique_id=68699572 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 6.355629, -0.95491266, -3.737996)
+
+[node name="birch_tree7" parent="." unique_id=1393163057 instance=ExtResource("4_1bvp3")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 1.3873081, -0.95491266, 3.6861353)

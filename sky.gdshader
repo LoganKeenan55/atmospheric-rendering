@@ -3,11 +3,12 @@ shader_type sky;
 uniform vec3 cameraPosition;
 uniform vec3 sunDirection;
 
-const float atmosphereHeight = 10000.0f; //height of atmosphere
-const float scaleHeight = 1000.0f;      //how fast atmosphere gets thinner
+const float atmosphereHeight = 1000.0f; //height of atmosphere
+const float scaleHeight = 100.0f;      //how fast atmosphere gets thinner
 
 const int steps = 64; //how many points sampled per ray
 const int inSteps = 16;
+
 //outScatter
 const vec3 lamda = vec3(0.700f, 0.540f, 0.49f); //colors in micrometers
 const float kr = 0.0025f; //scattering constant

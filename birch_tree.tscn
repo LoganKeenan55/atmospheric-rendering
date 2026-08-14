@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://0n17fjx4cqoi"]
+
+[ext_resource type="PackedScene" uid="uid://brd8q1ov15apf" path="res://birch_tree.glb" id="1_mfydd"]
+
+[node name="birch_tree" unique_id=1484072918 instance=ExtResource("1_mfydd")]
+transform = Transform3D(1.93, 0, 0, 0, 1.93, 0, 0, 0, 1.93, 0, 0, 0)
