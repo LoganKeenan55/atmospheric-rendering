@@ -70,6 +70,9 @@ public partial class Camera : Camera3D
 		}
 		if (Input.IsActionPressed("ctrl")){
 			GlobalPosition -= new Vector3(0, moveSpeed * (float)delta, 0);
+			if(GlobalPosition.Y <= 0.1f){
+				GlobalPosition = new Vector3(GlobalPosition.X,0.1f,GlobalPosition.Z);
+			}
 		}
 		if(direction == Vector3.Zero){
 			velocity = Vector3.Zero;

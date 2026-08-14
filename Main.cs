@@ -21,10 +21,12 @@ public partial class Main : Node3D
 
 	public override void _Process(double delta){
 		if (Input.IsActionPressed("e")){
-			angle += sunSpeed * (float)delta;
+			float speedMultiplier = Mathf.Max(sunDir.Y, 0.1f);
+			angle += sunSpeed * speedMultiplier * (float)delta;
 		}
 		if (Input.IsActionPressed("q")){
-			angle -= sunSpeed * (float)delta;
+			float speedMultiplier = Mathf.Max(sunDir.Y, 0.1f);
+			angle -= sunSpeed * speedMultiplier * (float)delta;
 		}
 		sunDir.X = Mathf.Sin(angle);
 		sunDir.Y = MathF.Cos(angle);
@@ -33,12 +35,7 @@ public partial class Main : Node3D
 		setSkyUniforms();
 
 		sun.LookAt(sun.GlobalPosition - sunDir, Godot.Vector3.Up);
-		if(sunDir.Y < 0.0f){
-			sun.Visible = false;
-		}
-		else{
-			sun.Visible = true;
-		}
+		sun.LightEnergy = MathF.Cos(angle);
 	}
 
 

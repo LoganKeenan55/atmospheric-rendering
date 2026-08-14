@@ -3,7 +3,7 @@ shader_type sky;
 uniform vec3 cameraPosition;
 uniform vec3 sunDirection;
 
-const float atmosphereHeight = 1000.0f; //height of atmosphere
+const float atmosphereHeight = 10000.0f; //height of atmosphere
 const float scaleHeight = 100.0f;      //how fast atmosphere gets thinner
 
 const int steps = 64; //how many points sampled per ray
@@ -18,12 +18,6 @@ const vec3 rayleighCoefficient = ((4.0f*PI) * scatteringCoefficient) / 1000.0f; 
 
 float distanceToAtmosphere(vec3 start, vec3 direction){
      float target = direction.y >= 0.0f ? atmosphereHeight : 0.0f;
-     if (abs(direction.y) < 0.0005) {
-          return 200000.0f; // near-horizontal ray, just clamp to a large distance
-     }
-     if(direction.y == 0.0f){
-          return 20000.0f;
-     }
      
      float t = (target - start.y) / direction.y;
      return t;
