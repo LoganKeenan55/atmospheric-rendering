@@ -78,25 +78,43 @@ vec3 getInScatter(vec3 start, vec3 direction, float phase){
 }
 
 
+vec3 waterColor(){
+     return vec3(0.1, 0.1, 0.15);
+}
+
 void sky() {
 
      vec3 rayDirection = EYEDIR;
 
-     float cosTheta = dot(rayDirection, sunDirection);
+     vec3 scatterDirection = rayDirection;
+     if (scatterDirection.y < 0.0f) {
+          scatterDirection.y = -scatterDirection.y;
+     }
+
+     float cosTheta = dot(scatterDirection, sunDirection);
      float phase = 0.75f * (1.0f + (cosTheta * cosTheta));
 
-     vec3 inScatter = getInScatter(cameraPosition, rayDirection, phase);
+     vec3 inScatter = getInScatter(cameraPosition, scatterDirection, phase);
 
-  
-     if(rayDirection.y < 0.0f){
+     //water
+     if (rayDirection.y < 0.0f) {
+          /*if (cosTheta > 0.999f) {
+               COLOR = vec3(1.0) * 0.80f;
+          } else {
+          */
+               COLOR = inScatter * waterColor();
+         // }
+     }
+     //sun is set
+     else if (sunDirection.y < 0.0) {
           COLOR = vec3(0.0f);
      }
-     else if(sunDirection.y < 0.0){
-          COLOR = vec3(0.0f);
-     } 
+     //sun circle
      else if (cosTheta > 0.999f) {
           COLOR = vec3(1.0);
-     } else {
+     }
+     //sky
+     else {
           COLOR = inScatter;
      }
 }
