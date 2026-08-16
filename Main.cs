@@ -20,7 +20,7 @@ public partial class Main : Node3D
 	}
 
 	public override void _Process(double delta){
-		float speedMultiplier = Mathf.Max(sunDir.Y, 0.05f);
+		float speedMultiplier = Mathf.Max(sunDir.Y, 0.02f);
 		float movement = sunSpeed * speedMultiplier * (float)delta;
 
 		if (Input.IsActionPressed("e"))

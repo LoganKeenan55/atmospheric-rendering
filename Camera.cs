@@ -20,12 +20,12 @@ public partial class Camera : Camera3D
 	public override void _Process(double delta){
 
 		if (Input.IsActionJustPressed("wheelUp")){
-			moveSpeed += 50;
+			moveSpeed += 10;
 		}
 		if (Input.IsActionJustPressed("wheelDown")){
-			moveSpeed -= 50;
-			if(moveSpeed < 20){
-				moveSpeed = 20;
+			moveSpeed -= 10;
+			if(moveSpeed < 10){
+				moveSpeed = 10;
 			}
 		}
 
