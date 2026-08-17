@@ -4,10 +4,10 @@ uniform vec3 cameraPosition;
 uniform vec3 sunDirection;
 
 const float atmosphereHeight = 10000.0f; //height of atmosphere
-const float scaleHeight = 400.0f;      //how fast atmosphere gets thinner
+const float scaleHeight = 1000.0f;      //how fast atmosphere gets thinner
 
 const int steps = 32; //how many points sampled per ray
-const int inSteps = 16;
+const int inSteps = 16; //how many points sampled per single scatter ray
 
 //outScatter
 const vec3 lamda = vec3(0.700f, 0.540f, 0.49f); //colors in micrometers
@@ -21,12 +21,13 @@ float distanceToAtmosphere(vec3 start, vec3 direction){
      float target = direction.y >= 0.0f ? atmosphereHeight : 0.0f;
      
      float t = (target - start.y) / direction.y;
-     return t;
+
+     return t; 
+     //min(t,150000.0f) to compensate for flat world
 }
 
 vec3 getOutScatter(vec3 start, vec3 direction, float maxDistance){
-     
-     float distance = 0.0f;
+     float distance = 0.0f; //distance traveled along ray
      vec3 outScatterAcc = vec3(0.0f);
 
      float stepSize = maxDistance / float(steps);
@@ -47,11 +48,14 @@ vec3 getOutScatter(vec3 start, vec3 direction, float maxDistance){
      return outScatterAcc * rayleighCoefficient;
 }
 
-vec3 getInScatter(vec3 start, vec3 direction, vec3 sunDir, float phase){
+vec3 getInScatter(vec3 start, vec3 direction, float phase){
      float distance = 0.0f; //distance traveled along ray
      vec3 inScatterAcc = vec3(0.0f);
 
      float stepSize = distanceToAtmosphere(start, direction) / float(inSteps);
+     
+     vec3 sunDirForScatter = sunDirection;
+     sunDirForScatter.y = max(sunDirection.y, 0.001f);
 
      for(int i = 0; i < inSteps; i++){
           vec3 sample = start + direction * distance;
@@ -59,13 +63,14 @@ vec3 getInScatter(vec3 start, vec3 direction, vec3 sunDir, float phase){
           float height = sample.y;
 
           if (height >= 0.0 && height <= atmosphereHeight) {
-               float localDensity = exp(-height / scaleHeight); //density at height
+               float localDensity = exp(-height / scaleHeight);
 
-               //sunlight reaching sample
-               vec3 sunOutScatter = getOutScatter(sample, sunDir, distanceToAtmosphere(sample, sunDir)); //how much sunlight makes it down to this sample point
-               vec3 viewOutScatter = getOutScatter(start, direction, distance); //how much sunlight makes it to camera
-
-               vec3 totalAttenuation = exp(-(sunOutScatter + viewOutScatter)); //combine trip sun -> sample -> camera
+               //how much sunlight makes it to sample point
+               vec3 sunOutScatter = getOutScatter(sample, sunDirection, distanceToAtmosphere(sample, sunDirForScatter));
+               //how much sunlight makes it to camera
+               vec3 viewOutScatter = getOutScatter(start, direction, distance);
+               //combine trip sun -> sample -> camera
+               vec3 totalAttenuation = exp(-(sunOutScatter + viewOutScatter));
 
                vec3 sampleInScatter = localDensity * totalAttenuation;
 
@@ -79,27 +84,21 @@ vec3 getInScatter(vec3 start, vec3 direction, vec3 sunDir, float phase){
 }
 
 
-vec3 waterColor(){
-     return vec3(0.1, 0.1, 0.15);
-}
-
 void sky() {
 
      vec3 rayDirection = EYEDIR;
 
+     //reflect ray direction on lower half of screen
      vec3 scatterDirection = rayDirection;
      if (scatterDirection.y < 0.0f) {
           scatterDirection.y = -scatterDirection.y;
      }
-
-     vec3 sunDirForScatter = sunDirection;
-     sunDirForScatter.y = max(sunDirection.y, 0.001f);
-     sunDirForScatter = normalize(sunDirForScatter);
-
+     
      float cosTheta = dot(scatterDirection, sunDirection);
-     float phase = 0.3f * (1.0f + (cosTheta * cosTheta));
+     float phase = 0.7f * (1.0f + (cosTheta * cosTheta));
 
-     vec3 inScatter = getInScatter(cameraPosition,scatterDirection, sunDirForScatter, phase);
+     //slightly dims horizon
+     vec3 inScatter = getInScatter(cameraPosition,scatterDirection, phase);
      float horizonFactor = mix(0.5f, 1.0f, smoothstep(0.0, 0.15f, abs(rayDirection.y)));
      inScatter *= horizonFactor;
 
@@ -107,13 +106,20 @@ void sky() {
      float twilightAmount = smoothstep(-twilightDuration, 0.0f, sunDirection.y);
      inScatter *= twilightAmount;
 
+     //water
      if (rayDirection.y < 0.0f) {
-          COLOR = inScatter * waterColor();
+          COLOR = inScatter * vec3(0.1, 0.1, 0.15);
      }
+     
+     //sun circle
      else if (dot(scatterDirection, sunDirection) > 0.999f) {
           COLOR = vec3(1.0);
      }
+
+     //sky
      else {
-          COLOR = inScatter;
+          //glow around sun
+          float glow = smoothstep(0.996f, 0.9999f, dot(scatterDirection, sunDirection)) * 0.30f;
+          COLOR = inScatter + vec3(1.0) * inScatter * glow;
      }
 }
